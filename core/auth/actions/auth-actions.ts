@@ -40,7 +40,8 @@ export const authLogin = async (email: string, password: string) => {
 
         return returnUserToToken(data);
     } catch(error) {
-        throw new Error('Login error ' + error);
+        //throw new Error('Login error ' + error);
+        return null;
     }
 }
 
