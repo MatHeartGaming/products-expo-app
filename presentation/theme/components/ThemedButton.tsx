@@ -1,38 +1,47 @@
 import { Ionicons } from '@expo/vector-icons';
-import React from 'react';
 import { Pressable, PressableProps, StyleSheet, Text } from 'react-native';
+import { useThemeColor } from '../hooks/useThemeColor';
 
 interface Props extends PressableProps {
-    children?: string;
-    icon: keyof typeof Ionicons.glyphMap;
+  children: string;
+  icon?: keyof typeof Ionicons.glyphMap;
 }
 
-const ThemedButton = ({children, icon, ...rest}: Props) => {
+const ThemedButton = ({ children, icon, ...rest }: Props) => {
+  const primaryColor = useThemeColor({}, 'primary');
+
   return (
     <Pressable
-        {...rest}
+      style={({ pressed }) => [
+        {
+          backgroundColor: pressed ? primaryColor + '90' : primaryColor,
+        },
+        styles.button,
+      ]}
+      {...rest}
     >
-      <Text>{children}</Text>
-      {
-        icon && (
-            <Ionicons 
-                name={icon}
-                size={24}
-                color={'white'}
-                style={{
-                    marginHorizontal: 5,
-                }}
-            />
-        )
-      }
-    </Pressable>
-  )
-}
+      <Text style={{ color: 'white' }}>{children}</Text>
 
-export default ThemedButton
+      {icon && (
+        <Ionicons
+          name={icon}
+          size={24}
+          color="white"
+          style={{ marginHorizontal: 5 }}
+        />
+      )}
+    </Pressable>
+  );
+};
+export default ThemedButton;
 
 const styles = StyleSheet.create({
-    button: {
-        paddingHorizontal: 5
-    }
-})
+  button: {
+    paddingHorizontal: 10,
+    paddingVertical: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+  },
+});
