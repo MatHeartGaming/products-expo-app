@@ -7,12 +7,13 @@ import ThemedTextInput from '@/presentation/theme/components/ThemedTextInput';
 import { ThemedView } from '@/presentation/theme/components/ThemedView';
 import { Ionicons } from '@expo/vector-icons';
 import { Redirect, useLocalSearchParams, useNavigation } from 'expo-router';
+import { Formik } from 'formik';
 import React, { useEffect } from 'react';
 import { ActivityIndicator, KeyboardAvoidingView, Platform, ScrollView, View } from 'react-native';
 
 const ProductScreen = () => {
 
-  const {id} = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
 
   const navigation = useNavigation();
 
@@ -35,7 +36,7 @@ const ProductScreen = () => {
 
   if (productQuery.isLoading) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size={30} />
       </View>
     );
@@ -48,83 +49,106 @@ const ProductScreen = () => {
   const product = productQuery.data!;
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    <Formik
+      initialValues={product}
+      onSubmit={(producLike) => console.log({ producLike })}
     >
-      <ScrollView>
 
-        <ProductImages images={product.images} />
+      {({ values, handleSubmit, handleChange, setFieldValue }) => (
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+        >
+          <ScrollView>
 
-        <ThemedView style={{ marginHorizontal: 10, marginTop: 20 }} >
-          <ThemedTextInput
-            placeholder='Titulo'
-            style={{ marginVertical: 5 }}
-          />
-          <ThemedTextInput
-            placeholder='Slug'
-            style={{ marginVertical: 5 }}
-          />
-          <ThemedTextInput
-            placeholder='Descripcion'
-            multiline
-            numberOfLines={5}
-            style={{ marginVertical: 5 }}
-          />
-        </ThemedView>
+            <ProductImages images={values.images} />
 
-        <ThemedView
-          style={{
-            marginHorizontal: 10,
-            marginVertical: 5,
-            flexDirection: 'row',
-            gap: 10,
-          }}>
+            <ThemedView style={{ marginHorizontal: 10, marginTop: 20 }} >
+              <ThemedTextInput
+                placeholder='Titulo'
+                style={{ marginVertical: 5 }}
+                value={values.title}
+                onChangeText={handleChange('title')}
+              />
+              <ThemedTextInput
+                placeholder='Slug'
+                style={{ marginVertical: 5 }}
+                value={values.slug}
+                onChangeText={handleChange('slug')}
+              />
+              <ThemedTextInput
+                placeholder='Descripcion'
+                multiline
+                numberOfLines={5}
+                style={{ marginVertical: 5 }}
+                value={values.description}
+                onChangeText={handleChange('description')}
+              />
+            </ThemedView>
 
-          <ThemedTextInput
-            placeholder='Precio'
-            style={{ flex: 1 }}
-          />
+            <ThemedView
+              style={{
+                marginHorizontal: 10,
+                marginVertical: 5,
+                flexDirection: 'row',
+                gap: 10,
+              }}>
 
-          <ThemedTextInput
-            placeholder='Inventario'
-            style={{ flex: 1 }}
-          />
+              <ThemedTextInput
+                placeholder='Precio'
+                style={{ flex: 1 }}
+                value={values.price.toString()}
+                onChangeText={handleChange('price')}
+              />
 
-        </ThemedView>
+              <ThemedTextInput
+                placeholder='Inventario'
+                style={{ flex: 1 }}
+                value={values.stock.toString()}
+                onChangeText={handleChange('stock')}
+              />
 
-        <ThemedView>
-          <ThemedButtonGroup
-            options={[Size.Xs, Size.S, Size.M, Size.L, Size.Xl, Size.Xxl, Size.Xxxl].map((size) => size.toString())}
-            selectedOptions={ product.sizes }
-            onSelect={ (options) => {
-              console.log(options);
-            } }
-           />
+            </ThemedView>
 
-           <ThemedButtonGroup
-            options={[Gender.Kid, Gender.Men, Gender.Women, Gender.Unisex].map((size) => size.toString())}
-            selectedOptions={ [product.gender] }
-            onSelect={ (options) => {
-              console.log(options);
-            } }
-           />
-        </ThemedView>
+            <ThemedView>
+              <ThemedButtonGroup
+                options={[Size.Xs, Size.S, Size.M, Size.L, Size.Xl, Size.Xxl, Size.Xxxl].map((size) => size.toString())}
+                selectedOptions={values.sizes}
+                onSelect={(selectedSizes) => {
+                  const listSelectedSizes = values.sizes.includes(selectedSizes as Size) 
+                  ? values.sizes.filter(s => s != selectedSizes)
+                  : [...values.sizes, selectedSizes];
+                  
+                  setFieldValue('sizes', listSelectedSizes)
+                }}
+              />
 
-        <View style={{
-          marginHorizontal: 10,
-          marginBottom: 50,
-          marginTop: 20
-        }}>
-          <ThemedButton
-            onPress={() => {}}
-            icon='save-outline'
-          >
-            Guardar
-          </ThemedButton>
-        </View>
+              <ThemedButtonGroup
+                options={[Gender.Kid, Gender.Men, Gender.Women, Gender.Unisex].map((size) => size.toString())}
+                selectedOptions={[values.gender]}
+                onSelect={(selectedOptions) => {
+                  setFieldValue('gender', selectedOptions)
+                }}
+              />
+            </ThemedView>
 
-      </ScrollView>
-    </KeyboardAvoidingView>
+            <View style={{
+              marginHorizontal: 10,
+              marginBottom: 50,
+              marginTop: 20
+            }}>
+              <ThemedButton
+                onPress={() => { }}
+                icon='save-outline'
+              >
+                Guardar
+              </ThemedButton>
+            </View>
+
+          </ScrollView>
+        </KeyboardAvoidingView>
+      )}
+
+    </Formik>
   )
 }
 
