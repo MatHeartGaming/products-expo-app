@@ -17,7 +17,7 @@ const ProductScreen = () => {
 
   const navigation = useNavigation();
 
-  const { productQuery } = useProduct(id.toString());
+  const { productQuery, producMutation } = useProduct(id.toString());
 
   useEffect(() => {
     navigation.setOptions({
@@ -51,7 +51,7 @@ const ProductScreen = () => {
   return (
     <Formik
       initialValues={product}
-      onSubmit={(producLike) => console.log({ producLike })}
+      onSubmit={(producLike) => producMutation.mutate(producLike)}
     >
 
       {({ values, handleSubmit, handleChange, setFieldValue }) => (
@@ -137,7 +137,7 @@ const ProductScreen = () => {
               marginTop: 20
             }}>
               <ThemedButton
-                onPress={() => { }}
+                onPress={() => handleSubmit()}
                 icon='save-outline'
               >
                 Guardar
