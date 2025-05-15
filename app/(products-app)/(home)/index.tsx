@@ -17,7 +17,7 @@ const HomeScreen = () => {
     <View style={{ paddingHorizontal: 10 }}>
       <ProductList
         products={productsQuery.data?.pages.flat() ?? []}
-        loadNextPage={() => {}}
+        loadNextPage={loadNextPage}
       />
     </View>
   )
