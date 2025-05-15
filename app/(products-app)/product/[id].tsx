@@ -1,5 +1,8 @@
+import { Gender, Size } from '@/core/products/interfaces/product.interface';
 import ProductImages from '@/presentation/products/components/ProductImages';
 import { useProduct } from '@/presentation/products/hooks/useProduct';
+import ThemedButton from '@/presentation/theme/components/ThemedButton';
+import ThemedButtonGroup from '@/presentation/theme/components/ThemedButtonGroup';
 import ThemedTextInput from '@/presentation/theme/components/ThemedTextInput';
 import { ThemedView } from '@/presentation/theme/components/ThemedView';
 import { Ionicons } from '@expo/vector-icons';
@@ -88,6 +91,37 @@ const ProductScreen = () => {
           />
 
         </ThemedView>
+
+        <ThemedView>
+          <ThemedButtonGroup
+            options={[Size.Xs, Size.S, Size.M, Size.L, Size.Xl, Size.Xxl, Size.Xxxl].map((size) => size.toString())}
+            selectedOptions={ product.sizes }
+            onSelect={ (options) => {
+              console.log(options);
+            } }
+           />
+
+           <ThemedButtonGroup
+            options={[Gender.Kid, Gender.Men, Gender.Women, Gender.Unisex].map((size) => size.toString())}
+            selectedOptions={ [product.gender] }
+            onSelect={ (options) => {
+              console.log(options);
+            } }
+           />
+        </ThemedView>
+
+        <View style={{
+          marginHorizontal: 10,
+          marginBottom: 50,
+          marginTop: 20
+        }}>
+          <ThemedButton
+            onPress={() => {}}
+            icon='save-outline'
+          >
+            Guardar
+          </ThemedButton>
+        </View>
 
       </ScrollView>
     </KeyboardAvoidingView>
